@@ -1,0 +1,10 @@
+আপনার Whitepaper PDF এখানে রাখুন।
+
+ফাইলের নাম হবে: whitepaper.pdf
+লোকেশন: এই ফোল্ডারেই রাখুন (index.html এর পাশে)
+
+PDF যোগ করার পর whitepaper.html ফাইল খুলুন
+এবং download বাটনের onclick এ লিখুন:
+window.location='/whitepaper.pdf'
+
+তারপর Vercel এ redeploy করুন।

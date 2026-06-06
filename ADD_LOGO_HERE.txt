@@ -1,0 +1,11 @@
+আপনার লোগো ফাইল এখানে রাখুন।
+
+ফাইলের নাম হবে: logo.png
+লোকেশন: এই ফোল্ডারেই রাখুন (index.html এর পাশে)
+
+সুপারিশ:
+- Format: PNG (transparent background)
+- Size: 512x512 px বা বড়
+- Square shape
+
+logo.png যোগ করার পর Vercel এ redeploy করুন।

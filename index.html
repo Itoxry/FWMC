@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FIFA World Cup Fun — FWMC Coin & NFT Platform</title>
+<meta name="description" content="The first World Cup–themed NFT ecosystem on TON Blockchain. Mine FWMC Coins using legendary player cards."/>
+<meta name="keywords" content="FWMC, FIFA World Cup Fun, NFT, TON Blockchain, crypto, mining, football"/>
+<meta property="og:title" content="FIFA World Cup Fun — FWMC Coin & NFT Platform"/>
+<meta property="og:description" content="Mine FWMC Coins with World Cup NFTs on TON Blockchain."/>
+<meta property="og:image" content="/logo.png"/>
+<meta property="og:url" content="https://fwmc.vercel.app"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@FIFAWorldCupFun"/>
+<!-- Favicon: replace logo.png with your actual logo file -->
+<link rel="icon" href="/logo.png" type="image/png" onerror="this.href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"/>
+<link rel="apple-touch-icon" href="/logo.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0d1a;--bg2:#12122a;--card:#161630;--card2:#1c1c38;--card3:#1e1e3f;
+  --purple:#7c3aed;--purple2:#6d28d9;--pink:#ec4899;--cyan:#06b6d4;
+  --green:#10b981;--gold:#f59e0b;--red:#ef4444;
+  --text:#f8fafc;--sub:#94a3b8;--muted:#475569;
+  --border:rgba(255,255,255,.07);--border2:rgba(124,58,237,.3);
+  --glow-p:rgba(124,58,237,.25);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:4px;}
+a{text-decoration:none;color:inherit;}
+
+/* ORBS */
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;animation:orbF 10s ease-in-out infinite;}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,.18),transparent 70%);top:-100px;left:-100px;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(236,72,153,.14),transparent 70%);top:50%;right:-100px;animation-delay:3s;}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,rgba(6,182,212,.12),transparent 70%);bottom:-100px;left:20%;animation-delay:6s;}
+@keyframes orbF{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,13,26,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+.nav-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 20px var(--glow-p);}
+.nav-logo-name{font-size:18px;font-weight:800;}
+.nav-logo-name span{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;align-items:center;gap:28px;}
+.nav-links a{font-size:14px;font-weight:500;color:var(--sub);transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-social{width:36px;height:36px;border-radius:10px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--sub);transition:all .2s;text-decoration:none;}
+.nav-social:hover{border-color:var(--border2);color:var(--text);background:rgba(124,58,237,.15);}
+.hmb{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+.hmb span{width:22px;height:2px;background:var(--text);border-radius:2px;}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 5% 80px;position:relative;overflow:hidden;text-align:center;}
+.hero-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent);}
+.hero-inner{position:relative;z-index:2;max-width:760px;width:100%;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.15);border:1px solid var(--border2);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:#c4b5fd;letter-spacing:.06em;text-transform:uppercase;margin-bottom:26px;}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:#c4b5fd;animation:blink 1.5s infinite;}
+.hero-title{font-size:clamp(44px,7vw,90px);font-weight:900;line-height:1;margin-bottom:20px;}
+.hero-title .l1{color:var(--text);display:block;}
+.hero-title .l2{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;}
+.hero-title .l3{color:var(--text);display:block;}
+.hero-desc{font-size:clamp(14px,2vw,17px);color:var(--sub);max-width:560px;margin:0 auto 36px;line-height:1.8;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
+.btn-purple{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;padding:13px 28px;border-radius:12px;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-purple:hover{transform:translateY(-2px);box-shadow:0 12px 32px var(--glow-p);}
+.btn-outline{background:transparent;color:var(--text);padding:13px 28px;border-radius:12px;font-weight:700;font-size:14px;border:1px solid var(--border2);display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-outline:hover{background:rgba(124,58,237,.1);transform:translateY(-2px);}
+.hero-live-bar{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:16px 28px;max-width:680px;width:100%;flex-wrap:wrap;gap:0;}
+.hlb-item{display:flex;align-items:center;gap:10px;padding:6px 22px;}
+.hlb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:blink 2s infinite;}
+.hlb-val{font-size:16px;font-weight:900;color:var(--text);}
+.hlb-lbl{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
+.hlb-sep{width:1px;height:32px;background:var(--border);}
+
+/* SECTION */
+.section{padding:80px 5%;position:relative;z-index:1;}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;}
+.sec-title{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);}
+.sec-title span{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.explore-btn{font-size:13px;font-weight:700;color:var(--purple);cursor:pointer;display:flex;align-items:center;gap:5px;transition:gap .2s;}
+.explore-btn:hover{gap:10px;}
+
+/* EMPTY STATE */
+.empty-nft-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;background:var(--card);border:1px dashed var(--border2);border-radius:20px;text-align:center;grid-column:1/-1;}
+.empty-icon{font-size:56px;margin-bottom:16px;opacity:.5;}
+.empty-title{font-size:18px;font-weight:700;color:var(--sub);margin-bottom:8px;}
+.empty-desc{font-size:13px;color:var(--muted);line-height:1.6;max-width:340px;}
+
+/* NFT GRID */
+.nft-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.nft-card-item{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .3s;cursor:pointer;position:relative;}
+.nft-card-item:hover{transform:translateY(-8px);border-color:var(--border2);box-shadow:0 24px 60px rgba(0,0,0,.6);}
+.nft-card-img-wrap{height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.nft-card-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.nft-card-img-wrap .nft-em{font-size:80px;animation:nftFloat 4s ease-in-out infinite;}
+@keyframes nftFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.nft-card-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,26,.8) 0%,transparent 60%);}
+.nft-like-badge{position:absolute;top:10px;right:10px;background:rgba(13,13,26,.7);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--sub);z-index:2;cursor:pointer;}
+.nft-like-badge:hover{color:var(--pink);}
+.nft-new-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;border-radius:8px;padding:3px 9px;font-size:9px;font-weight:800;z-index:2;}
+.nft-card-body{padding:14px;}
+.nft-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.nft-card-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.rarity-badge{font-size:9px;font-weight:800;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.04em;}
+.r-mythic{background:rgba(239,68,68,.15);color:#f87171;}
+.r-legendary{background:rgba(245,158,11,.15);color:#fbbf24;}
+.r-epic{background:rgba(168,85,247,.15);color:#c084fc;}
+.r-rare{background:rgba(59,130,246,.15);color:#60a5fa;}
+.r-common{background:rgba(148,163,184,.12);color:var(--sub);}
+.nft-card-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.nft-creator-lbl{font-size:10px;color:var(--muted);}
+.nft-price-val{font-family:'Space Mono',monospace;font-size:13px;color:var(--purple);font-weight:700;}
+.nft-card-btns{display:flex;gap:8px;}
+.btn-bid{flex:1;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;padding:9px;border-radius:10px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-bid:hover{box-shadow:0 4px 16px var(--glow-p);}
+.btn-info{flex:1;background:var(--card2);color:var(--sub);padding:9px;border-radius:10px;font-size:12px;font-weight:700;border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-info:hover{border-color:var(--border2);color:var(--text);}
+.nft-desc-text{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+
+/* TOKENOMICS */
+.tcard-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.tcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;transition:all .2s;}
+.tcard:hover{border-color:var(--border2);transform:translateY(-3px);}
+.tcard-pct{font-size:30px;font-weight:900;margin-bottom:5px;}
+.tcard-name{font-size:11px;font-weight:600;color:var(--sub);margin-bottom:2px;}
+.tcard-supply{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+.tbar{height:10px;border-radius:100px;background:var(--card2);display:flex;gap:2px;overflow:hidden;margin-bottom:30px;}
+.tbar-seg{height:100%;border-radius:100px;}
+.tinfo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.tinfo-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.tinfo-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.tinfo-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;}
+
+/* ROADMAP */
+.rm-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.rm-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;position:relative;overflow:hidden;transition:all .2s;}
+.rm-card:hover{border-color:var(--border2);}
+.rm-card.cur{border-color:var(--border2);background:linear-gradient(145deg,var(--card),rgba(124,58,237,.06));}
+.rm-card.cur::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--pink));}
+.rm-phase{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.rm-q{font-size:17px;font-weight:900;color:var(--text);margin-bottom:10px;}
+.rm-list{display:flex;flex-direction:column;gap:5px;}
+.rm-row{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--sub);}
+.rm-row::before{content:'';width:5px;height:5px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.rm-done::before{background:var(--green);}
+.rm-cur::before{background:var(--purple);animation:blink 1.5s infinite;}
+.rm-up::before{background:var(--muted);}
+.rm-status{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;margin-top:12px;}
+.rs-done{background:rgba(16,185,129,.15);color:#34d399;}
+.rs-cur{background:rgba(124,58,237,.15);color:#c4b5fd;}
+.rs-up{background:rgba(255,255,255,.05);color:var(--muted);}
+
+/* WHITEPAPER */
+.wp-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.wp-ch{display:flex;align-items:center;gap:14px;padding:13px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px;}
+.wp-ch:hover{border-color:var(--border2);transform:translateX(5px);}
+.wp-num{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--purple);width:32px;flex-shrink:0;}
+.wp-ch-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.wp-ch-desc{font-size:11px;color:var(--muted);}
+.wp-doc{background:linear-gradient(145deg,var(--card),var(--card3));border:1px solid var(--border);border-radius:22px;padding:28px;position:relative;overflow:hidden;}
+.wp-doc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--pink),var(--cyan));}
+.wp-doc-icon{width:46px;height:46px;border-radius:13px;background:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+.wp-lines{display:flex;flex-direction:column;gap:7px;margin-bottom:22px;}
+.wp-ln{height:7px;border-radius:3px;background:var(--card2);}
+.wp-ln.a{background:linear-gradient(90deg,rgba(124,58,237,.3),transparent);}
+.wp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
+.wp-stat{background:var(--bg2);border-radius:9px;padding:9px;text-align:center;}
+.wp-stat-v{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;}
+.wp-stat-l{font-size:10px;color:var(--muted);margin-top:2px;}
+.btn-dl{width:100%;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:12px;border-radius:11px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;}
+.btn-dl:hover{transform:translateY(-1px);box-shadow:0 8px 24px var(--glow-p);}
+
+/* TEAM */
+.team-wrap{display:flex;justify-content:center;}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;text-align:center;max-width:380px;width:100%;transition:all .3s;}
+.team-card:hover{border-color:var(--border2);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.4);}
+.team-av{width:90px;height:90px;border-radius:50%;margin:0 auto 16px;font-size:44px;display:flex;align-items:center;justify-content:center;border:3px solid rgba(245,158,11,.4);background:linear-gradient(135deg,rgba(245,158,11,.12),transparent);}
+.team-name{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.team-role{font-size:13px;font-weight:700;margin-bottom:12px;}
+.team-bio{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.team-soc{display:flex;justify-content:center;gap:8px;}
+.tsoc{width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;text-decoration:none;color:var(--sub);}
+.tsoc:hover{border-color:var(--border2);color:var(--text);}
+
+/* FAQ */
+.faq-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:10px;}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;cursor:pointer;}
+.faq-q:hover{background:var(--card2);}
+.faq-q-txt{font-size:14px;font-weight:600;color:var(--text);}
+.faq-ico{color:var(--purple);font-size:20px;transition:transform .3s;flex-shrink:0;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s,padding .35s;}
+.faq-a.open{max-height:200px;padding:0 17px 15px;}
+.faq-a p{font-size:13px;color:var(--sub);line-height:1.7;}
+.faq-item.open .faq-ico{transform:rotate(45deg);}
+.faq-item.open{border-color:var(--border2);}
+.faq-cta{background:linear-gradient(145deg,rgba(124,58,237,.12),rgba(236,72,153,.08));border:1px solid var(--border2);border-radius:22px;padding:28px;text-align:center;}
+
+/* CTA */
+#cta{background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(236,72,153,.07));border-top:1px solid var(--border);text-align:center;padding:90px 5%;}
+.cta-title{font-size:clamp(38px,6vw,76px);font-weight:900;line-height:1;margin-bottom:16px;}
+.cta-title span{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cta-stats{display:flex;align-items:center;justify-content:center;gap:32px;margin-top:48px;flex-wrap:wrap;}
+.cta-stat-v{font-size:34px;font-weight:900;color:var(--text);}
+.cta-stat-l{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:56px 5% 28px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:44px;}
+.footer-brand-name{font-size:20px;font-weight:800;margin-bottom:10px;}
+.footer-brand-name span{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;}
+.footer-soc{display:flex;gap:8px;}
+.fsoc{width:34px;height:34px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--sub);transition:all .2s;text-decoration:none;}
+.fsoc:hover{border-color:var(--border2);background:rgba(124,58,237,.15);color:var(--text);}
+.footer-col h4{font-size:11px;font-weight:700;color:var(--text);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:9px;transition:color .2s;cursor:pointer;}
+.footer-col a:hover{color:var(--purple);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-copy{font-size:12px;color:var(--muted);}
+.footer-live{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(18px);z-index:9998;background:var(--card2);border:1px solid var(--border2);border-radius:13px;padding:11px 20px;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.6);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ADMIN OVERLAY */
+#admin-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);z-index:9999;align-items:center;justify-content:center;padding:16px;}
+#admin-box{background:var(--card);border:1px solid var(--border2);border-radius:24px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;padding:28px;}
+#admin-box::-webkit-scrollbar{width:3px;}
+#admin-box::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px;}
+.adm-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.adm-input:focus{border-color:var(--border2);}
+.adm-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:block;}
+.adm-field{margin-bottom:12px;}
+.adm-btn{width:100%;padding:12px;border-radius:11px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;}
+.adm-btn-primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;}
+.adm-btn-primary:hover{box-shadow:0 6px 20px var(--glow-p);}
+.adm-btn-cancel{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.adm-btn-cancel:hover{color:var(--text);border-color:var(--border2);}
+.adm-btn-del{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25);padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+.adm-btn-del:hover{background:rgba(239,68,68,.22);}
+.adm-img-preview{width:100%;height:140px;border-radius:10px;background:var(--bg2);border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;margin-bottom:12px;}
+.adm-img-preview img{width:100%;height:100%;object-fit:cover;}
+.adm-img-preview .adm-img-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:600;}
+.adm-img-preview .adm-img-ph svg{width:32px;height:32px;opacity:.5;}
+.adm-sect{background:var(--bg2);border-radius:14px;padding:16px;margin-bottom:14px;}
+.adm-sect-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.adm-nft-row{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border-radius:10px;margin-bottom:8px;}
+.adm-nft-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;}
+.adm-nft-thumb img{width:100%;height:100%;object-fit:cover;}
+.adm-color-row{display:flex;gap:8px;flex-wrap:wrap;}
+.adm-color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative;}
+.adm-color-dot.sel{border-color:#fff;transform:scale(1.15);}
+
+.fpill{background:var(--card);border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--sub);cursor:pointer;border:none;font-family:inherit;transition:all .2s;border:1px solid var(--border);}
+.fpill.on{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;box-shadow:0 3px 12px var(--glow-p);border-color:transparent;}
+.fpill:active{transform:scale(.96);}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.nft-grid{grid-template-columns:repeat(3,1fr);}.tcard-grid{grid-template-columns:repeat(3,1fr);}.rm-grid{grid-template-columns:repeat(3,1fr);}.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:900px){.wp-wrap,.faq-wrap{grid-template-columns:1fr;}.nft-grid{grid-template-columns:repeat(2,1fr);}.nav-links{display:none;}.hmb{display:flex;}.tinfo-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.nft-grid{grid-template-columns:1fr 1fr;}.tcard-grid{grid-template-columns:1fr 1fr;}.rm-grid{grid-template-columns:1fr 1fr;}.footer-grid{grid-template-columns:1fr;}.hero-btns{flex-direction:column;align-items:center;}.hlb-item{padding:4px 14px;}.hlb-sep{width:100%;height:1px;}}
+.rev{opacity:0;transform:translateY(24px);transition:opacity .65s,transform .65s;}
+.rev.vis{opacity:1;transform:translateY(0);}
+.rd1{transition-delay:.1s;}.rd2{transition-delay:.2s;}.rd3{transition-delay:.3s;}.rd4{transition-delay:.4s;}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" id="nav-logo" title="Click 10× for admin">
+    <!-- Replace logo.png with your actual logo file in /public/logo.png -->
+    <div class="nav-logo-icon">
+      <img src="/logo.png" alt="FWMC Logo" style="width:100%;height:100%;object-fit:contain;border-radius:8px" onerror="this.style.display='none';this.parentNode.innerHTML='⚽'"/>
+    </div>
+    <div class="nav-logo-name">FWMC <span>Platform</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#nfts">NFTs</a>
+    <a href="#tokenomics">Token</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#whitepaper">Whitepaper</a>
+    <a href="#team">Team</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-social" href="https://t.me/FIFAWorldCupFun" target="_blank" title="FWMC Telegram">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+    </a>
+    <a class="nav-social" href="https://x.com/intent/follow?screen_name=FIFAWorldCupFun" target="_blank" title="FWMC Twitter">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a class="nav-social" href="https://coinmarketcap.com/community/profile/FWMC/" target="_blank" title="CoinMarketCap">
+      <svg width="16" height="16" viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="50" r="50"/><path fill="white" d="M50 20c-16.57 0-30 13.43-30 30s13.43 30 30 30 30-13.43 30-30-13.43-30-30-30zm0 48c-9.94 0-18-8.06-18-18s8.06-18 18-18 18 8.06 18 18-8.06 18-18 18z"/></svg>
+    </a>
+  </div>
+  <div class="hmb" onclick="toggleMob()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- MOB MENU -->
+<div id="mob-menu" style="display:none;position:fixed;top:68px;left:0;right:0;z-index:998;background:rgba(13,13,26,.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:18px 5%;">
+  <a href="#nfts" style="display:block;padding:11px 0;color:var(--sub);font-weight:600;border-bottom:1px solid var(--border)" onclick="toggleMob()">NFTs</a>
+  <a href="#tokenomics" style="display:block;padding:11px 0;color:var(--sub);font-weight:600;border-bottom:1px solid var(--border)" onclick="toggleMob()">Token</a>
+  <a href="#roadmap" style="display:block;padding:11px 0;color:var(--sub);font-weight:600;border-bottom:1px solid var(--border)" onclick="toggleMob()">Roadmap</a>
+  <a href="#whitepaper" style="display:block;padding:11px 0;color:var(--sub);font-weight:600;border-bottom:1px solid var(--border)" onclick="toggleMob()">Whitepaper</a>
+  <a href="#team" style="display:block;padding:11px 0;color:var(--sub);font-weight:600;border-bottom:1px solid var(--border)" onclick="toggleMob()">Team</a>
+  <a href="#faq" style="display:block;padding:11px 0;color:var(--sub);font-weight:600" onclick="toggleMob()">FAQ</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">⚽ TON Blockchain • NFT Mining</div>
+    <h1 class="hero-title">
+      <span class="l1">Discover, find,</span>
+      <span class="l2">Earn extraordinary</span>
+      <span class="l3">World Cup NFTs</span>
+    </h1>
+    <p class="hero-desc">The first World Cup–themed NFT ecosystem on TON Blockchain. Mine FWMC Coins using legendary player cards and be part of football's digital revolution.</p>
+    <div class="hero-btns">
+      <button class="btn-purple" onclick="document.getElementById('nfts').scrollIntoView({behavior:'smooth'})">⚽ Explore NFTs</button>
+      <a class="btn-outline" href="https://t.me/FIFAWorldCupFun" target="_blank">✈️ Join Community</a>
+    </div>
+    <div class="hero-live-bar">
+      <div class="hlb-item"><div class="hlb-dot" style="background:var(--green)"></div><div><div class="hlb-val">0.3 TON</div><div class="hlb-lbl">Floor Price <span style="color:var(--green)">↑12%</span></div></div></div>
+      <div class="hlb-sep"></div>
+      <div class="hlb-item"><div class="hlb-dot" style="background:var(--purple)"></div><div><div class="hlb-val">4,820 TON</div><div class="hlb-lbl">Total Volume <span style="color:var(--green)">↑8%</span></div></div></div>
+      <div class="hlb-sep"></div>
+      <div class="hlb-item"><div class="hlb-dot" style="background:var(--gold)"></div><div><div class="hlb-val">+50%</div><div class="hlb-lbl">Max Mining Boost</div></div></div>
+      <div class="hlb-sep"></div>
+      <div class="hlb-item"><div class="hlb-dot" style="background:var(--cyan)"></div><div><div class="hlb-val">10,000</div><div class="hlb-lbl">NFTs Minted</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NFT SECTION (Admin posts here) -->
+<section class="section" id="nfts" style="border-top:1px solid var(--border)">
+  <div class="sec-hdr rev">
+    <div class="sec-title">World Cup <span>NFT Collection</span></div>
+    <a class="explore-btn" href="https://t.me/FifaOGPass" target="_blank">VIEW ALL →</a>
+  </div>
+  <div class="nft-grid" id="nft-grid">
+    <div class="empty-nft-state">
+      <div class="empty-icon">🎴</div>
+      <div class="empty-title">No NFTs Listed Yet</div>
+      <div class="empty-desc">Admin will post World Cup NFTs here. Check back soon or join our Telegram!</div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE AUCTIONS (Admin posts here) -->
+<section class="section" id="auctions" style="border-top:1px solid var(--border)">
+  <div class="sec-hdr rev">
+    <div class="sec-title">Live <span>Auctions</span></div>
+    <a class="explore-btn" href="https://t.me/FifaOGPass" target="_blank">EXPLORE MORE →</a>
+  </div>
+  <div class="nft-grid" id="auction-grid">
+    <div class="empty-nft-state">
+      <div class="empty-icon">🔨</div>
+      <div class="empty-title">No Active Auctions</div>
+      <div class="empty-desc">Live auction NFTs will appear here when posted by admin.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TODAY'S PICKS (Admin posts here) -->
+<section class="section" id="picks" style="background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="sec-hdr rev">
+    <div class="sec-title">Today's <span>Picks</span></div>
+    <a class="explore-btn" href="https://t.me/FifaOGPass" target="_blank">EXPLORE MORE →</a>
+  </div>
+  <!-- Filter Pills -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px" class="rev">
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="picks-filters">
+      <button class="fpill on" onclick="filterPicks('All',this)">All</button>
+      <button class="fpill" onclick="filterPicks('Mythic',this)">Mythic</button>
+      <button class="fpill" onclick="filterPicks('Legendary',this)">Legendary</button>
+      <button class="fpill" onclick="filterPicks('Epic',this)">Epic</button>
+      <button class="fpill" onclick="filterPicks('Rare',this)">Rare</button>
+      <button class="fpill" onclick="filterPicks('Common',this)">Common</button>
+    </div>
+    <button class="fpill" onclick="showToast('Sorted by: Recently Added')">⇅ Recently Added</button>
+  </div>
+  <div class="nft-grid" id="picks-grid">
+    <div class="empty-nft-state">
+      <div class="empty-icon">✨</div>
+      <div class="empty-title">No Picks Yet</div>
+      <div class="empty-desc">Today's featured NFT picks will appear here when posted by admin.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section class="section" id="tokenomics" style="border-top:1px solid var(--border)">
+  <div class="sec-hdr rev"><div class="sec-title">FWMC <span>Tokenomics</span></div><div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--sub)">1,000,000,000 FWMC</div></div>
+  <div class="tcard-grid rev" id="tcard-grid"></div>
+  <div class="tbar rev" id="tbar"></div>
+  <div class="tinfo-grid rev" id="tinfo-grid"></div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap" style="border-top:1px solid var(--border)">
+  <div class="sec-hdr rev"><div class="sec-title">Project <span>Roadmap</span></div><div style="font-size:13px;color:var(--sub)">2025 — 2026</div></div>
+  <div class="rm-grid rev" id="rm-grid"></div>
+</section>
+
+<!-- WHITEPAPER -->
+<section class="section" id="whitepaper" style="border-top:1px solid var(--border)">
+  <div class="wp-wrap">
+    <div class="rev">
+      <div style="display:inline-block;background:rgba(124,58,237,.15);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:10px;font-weight:700;color:#c4b5fd;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Whitepaper</div>
+      <h2 style="font-size:clamp(28px,4vw,48px);font-weight:900;line-height:1.05;margin-bottom:12px">Read the <span style="background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent">FWMC</span> Whitepaper</h2>
+      <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:24px">Everything about FWMC — technology, tokenomics, governance, and long-term vision.</p>
+      <div id="wp-chapters"></div>
+    </div>
+    <div class="rev rd2">
+      <div class="wp-doc">
+        <div class="wp-doc-icon">📄</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px">FWMC Whitepaper</div>
+        <div style="font-size:12px;color:var(--sub);margin-bottom:20px">Version 1.2 • 2025</div>
+        <div class="wp-lines">
+          <div class="wp-ln a" style="width:80%"></div><div class="wp-ln" style="width:95%"></div>
+          <div class="wp-ln" style="width:70%"></div><div class="wp-ln a" style="width:88%"></div>
+          <div class="wp-ln" style="width:60%"></div><div class="wp-ln" style="width:92%"></div>
+          <div class="wp-ln" style="width:75%"></div><div class="wp-ln a" style="width:84%"></div>
+        </div>
+        <div class="wp-stats">
+          <div class="wp-stat"><div class="wp-stat-v">48</div><div class="wp-stat-l">Pages</div></div>
+          <div class="wp-stat"><div class="wp-stat-v" style="color:var(--pink)">v1.2</div><div class="wp-stat-l">Version</div></div>
+          <div class="wp-stat"><div class="wp-stat-v" style="color:var(--gold)">PDF</div><div class="wp-stat-l">Format</div></div>
+        </div>
+        <button class="btn-dl" onclick="window.open('/whitepaper.html','_blank')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Whitepaper (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section" id="team" style="background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="sec-hdr rev"><div class="sec-title">Meet the <span>Owner</span></div></div>
+  <div class="team-wrap rev">
+    <div class="team-card">
+      <div class="team-av">👑</div>
+      <div class="team-name">Intrac Ton</div>
+      <div class="team-role" style="color:var(--gold)">Founder & Main Owner</div>
+      <div class="team-bio">The visionary behind FIFA World Cup Fun. Building the future of football-themed crypto on TON Blockchain.</div>
+      <div class="team-soc">
+        <a class="tsoc" href="https://x.com/intent/follow?screen_name=IntracTon" target="_blank" title="Follow on Twitter/X">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="border-top:1px solid var(--border)">
+  <div class="sec-hdr rev"><div class="sec-title">Common <span>Questions</span></div></div>
+  <div class="faq-wrap">
+    <div class="rev" id="faq-list"></div>
+    <div class="rev rd2">
+      <div class="faq-cta">
+        <div style="font-size:52px;margin-bottom:14px">⚽</div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:8px">Ready to Play?</div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:22px;line-height:1.6">Join 50,000+ players mining FWMC and collecting World Cup NFTs.</div>
+        <a class="btn-purple" href="https://t.me/FIFAWorldCupFun" target="_blank" style="width:100%;justify-content:center;margin-bottom:10px;text-decoration:none;display:flex">✈️ Join Telegram</a>
+        <a class="btn-outline" href="https://x.com/intent/follow?screen_name=FIFAWorldCupFun" target="_blank" style="width:100%;justify-content:center;text-decoration:none;display:flex">Follow on Twitter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.15);border:1px solid var(--border2);border-radius:100px;padding:6px 14px;font-size:11px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.06em;margin-bottom:22px">🚀 Early Access Open</div>
+  <div class="cta-title">JOIN THE <span>GAME</span><br>TODAY</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7">Start mining FWMC for free. Collect World Cup NFTs and earn rewards.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a class="btn-purple" href="https://t.me/FIFAWorldCupFun" target="_blank">⚽ Start Mining Free</a>
+    <a class="btn-outline" href="https://t.me/FifaOGPass" target="_blank">🎴 NFT Project</a>
+  </div>
+  <div class="cta-stats">
+    <div><div class="cta-stat-v">50K+</div><div class="cta-stat-l">Community Members</div></div>
+    <div style="width:1px;height:36px;background:var(--border)"></div>
+    <div><div class="cta-stat-v" style="background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent">10K+</div><div class="cta-stat-l">NFTs Minted</div></div>
+    <div style="width:1px;height:36px;background:var(--border)"></div>
+    <div><div class="cta-stat-v" style="color:var(--gold)">1B</div><div class="cta-stat-l">FWMC Supply</div></div>
+    <div style="width:1px;height:36px;background:var(--border)"></div>
+    <div><div class="cta-stat-v" style="color:var(--cyan)">TON</div><div class="cta-stat-l">Blockchain</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:16px">⚽</div>
+        <div class="footer-brand-name">FWMC <span>Platform</span></div>
+      </div>
+      <p class="footer-desc">The first World Cup–themed crypto ecosystem on TON Blockchain. Mine FWMC, collect NFTs, and be part of football's digital future.</p>
+      <div class="footer-soc">
+        <a class="fsoc" href="https://t.me/FIFAWorldCupFun" target="_blank" title="FWMC Telegram"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg></a>
+        <a class="fsoc" href="https://x.com/intent/follow?screen_name=FIFAWorldCupFun" target="_blank" title="FWMC Twitter"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a class="fsoc" href="https://t.me/FifaOGPass" target="_blank" title="NFT Telegram"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg></a>
+        <a class="fsoc" href="https://x.com/intent/follow?screen_name=FifaOGPass" target="_blank" title="NFT Twitter"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a class="fsoc" href="https://coinmarketcap.com/community/profile/FWMC/" target="_blank" title="CoinMarketCap"><svg width="14" height="14" viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="50" r="50"/><path fill="var(--bg2)" d="M50 20c-16.57 0-30 13.43-30 30s13.43 30 30 30 30-13.43 30-30-13.43-30-30-30zm0 48c-9.94 0-18-8.06-18-18s8.06-18 18-18 18 8.06 18 18-8.06 18-18 18z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>FWMC Coin</h4>
+      <a href="https://t.me/FIFAWorldCupFun" target="_blank">Telegram Community</a>
+      <a href="https://x.com/intent/follow?screen_name=FIFAWorldCupFun" target="_blank">Twitter / X</a>
+      <a href="https://coinmarketcap.com/community/profile/FWMC/" target="_blank">CoinMarketCap</a>
+    </div>
+    <div class="footer-col">
+      <h4>NFT Project</h4>
+      <a href="https://t.me/FifaOGPass" target="_blank">Telegram Channel</a>
+      <a href="https://x.com/intent/follow?screen_name=FifaOGPass" target="_blank">Twitter / X</a>
+      <a href="#nfts">Browse NFTs</a>
+    </div>
+    <div class="footer-col">
+      <h4>Owner</h4>
+      <a href="https://x.com/intent/follow?screen_name=IntracTon" target="_blank">Intrac Ton (Twitter)</a>
+      <a href="#whitepaper">Whitepaper</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 FIFA World Cup Fun. All rights reserved.</div>
+    <div class="footer-live"><div class="live-dot"></div>Live on TON Blockchain</div>
+  </div>
+</footer>
+
+<!-- SECRET ADMIN PANEL -->
+<div id="admin-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+  <!-- LOGIN -->
+  <div id="adm-login" style="background:var(--card);border:1px solid var(--border2);border-radius:22px;width:100%;max-width:360px;padding:28px;text-align:center">
+    <div style="font-size:44px;margin-bottom:12px">🔐</div>
+    <div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:6px">Admin Panel</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px">FWMC Platform Settings</div>
+    <input id="adm-pass" type="password" placeholder="Enter admin password" class="adm-input" style="margin-bottom:12px;text-align:center" onkeydown="if(event.key==='Enter')checkPass()"/>
+    <button class="adm-btn adm-btn-primary" onclick="checkPass()" style="margin-bottom:8px">🔓 Unlock</button>
+    <button class="adm-btn adm-btn-cancel" onclick="closeAdmin()">Cancel</button>
+  </div>
+  <!-- DASHBOARD -->
+  <div id="adm-dash" style="display:none" class="rev" id="admin-box">
+    <div id="admin-box" style="background:var(--card);border:1px solid var(--border2);border-radius:22px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;padding:26px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div style="font-size:17px;font-weight:800;color:var(--text)">⚙️ Admin Dashboard</div>
+        <button onclick="closeAdmin()" class="adm-btn-del">✕ Close</button>
+      </div>
+
+      <!-- POST NFT -->
+      <div class="adm-sect">
+        <div class="adm-sect-title">📤 Post New NFT to Website</div>
+
+        <!-- Image Upload -->
+        <div class="adm-field">
+          <label class="adm-label">NFT Image (click to upload)</label>
+          <div class="adm-img-preview" id="img-preview" onclick="document.getElementById('img-file').click()">
+            <div class="adm-img-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span>Tap to upload image</span>
+            </div>
+          </div>
+          <input type="file" id="img-file" accept="image/*" style="display:none" onchange="previewImg(this)"/>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="adm-field">
+            <label class="adm-label">NFT Name *</label>
+            <input id="anft-name" type="text" placeholder="e.g. Messi Legend" class="adm-input"/>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Price (TON) *</label>
+            <input id="anft-price" type="number" placeholder="e.g. 5.5" step="0.1" min="0.1" class="adm-input"/>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Rarity</label>
+            <select id="anft-rarity" class="adm-input">
+              <option>Mythic</option><option>Legendary</option><option>Epic</option><option>Rare</option><option>Common</option>
+            </select>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Mining Boost %</label>
+            <input id="anft-boost" type="number" placeholder="e.g. 25" min="1" max="50" class="adm-input"/>
+          </div>
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label">Description (optional)</label>
+          <input id="anft-desc" type="text" placeholder="Brief description..." class="adm-input"/>
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label">Card Background Color</label>
+          <div class="adm-color-row" id="color-row">
+            <div class="adm-color-dot sel" data-color="rgba(239,68,68,.18)" style="background:#ef4444" onclick="selectColor(this)"></div>
+            <div class="adm-color-dot" data-color="rgba(245,158,11,.18)" style="background:#f59e0b" onclick="selectColor(this)"></div>
+            <div class="adm-color-dot" data-color="rgba(168,85,247,.18)" style="background:#a855f7" onclick="selectColor(this)"></div>
+            <div class="adm-color-dot" data-color="rgba(59,130,246,.18)" style="background:#3b82f6" onclick="selectColor(this)"></div>
+            <div class="adm-color-dot" data-color="rgba(16,185,129,.18)" style="background:#10b981" onclick="selectColor(this)"></div>
+            <div class="adm-color-dot" data-color="rgba(236,72,153,.18)" style="background:#ec4899" onclick="selectColor(this)"></div>
+            <div class="adm-color-dot" data-color="rgba(6,182,212,.18)" style="background:#06b6d4" onclick="selectColor(this)"></div>
+          </div>
+        </div>
+
+        <!-- Section selector -->
+        <div class="adm-field">
+          <label class="adm-label">📌 Show in Sections (select all that apply)</label>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+            <label style="display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--card);border-radius:10px;cursor:pointer;border:1px solid var(--border)">
+              <input type="checkbox" id="sec-collection" checked style="width:16px;height:16px;accent-color:var(--purple)"/>
+              <div><div style="font-size:13px;font-weight:700;color:var(--text)">🎴 NFT Collection</div><div style="font-size:11px;color:var(--muted)">Main collection grid</div></div>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--card);border-radius:10px;cursor:pointer;border:1px solid var(--border)">
+              <input type="checkbox" id="sec-auction" style="width:16px;height:16px;accent-color:var(--purple)"/>
+              <div><div style="font-size:13px;font-weight:700;color:var(--text)">🔨 Live Auctions</div><div style="font-size:11px;color:var(--muted)">Featured auction cards</div></div>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--card);border-radius:10px;cursor:pointer;border:1px solid var(--border)">
+              <input type="checkbox" id="sec-picks" style="width:16px;height:16px;accent-color:var(--purple)"/>
+              <div><div style="font-size:13px;font-weight:700;color:var(--text)">✨ Today's Picks</div><div style="font-size:11px;color:var(--muted)">Featured picks section</div></div>
+            </label>
+          </div>
+        </div>
+
+        <button class="adm-btn adm-btn-primary" onclick="postNFT()">✅ Post NFT to Website</button>
+      </div>
+
+      <!-- POSTED NFTs LIST -->
+      <div class="adm-sect">
+        <div class="adm-sect-title">🗂️ Posted NFTs <span style="font-size:12px;color:var(--muted);font-weight:500" id="nft-count"></span></div>
+        <div id="adm-nft-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const TOKEN_DIST = [
+  {name:'Mining Rewards',pct:40,supply:'400M',color:'#7c3aed'},
+  {name:'Community',pct:25,supply:'250M',color:'#ec4899'},
+  {name:'Liquidity',pct:15,supply:'150M',color:'#06b6d4'},
+  {name:'Team',pct:10,supply:'100M',color:'#10b981'},
+  {name:'Reserve',pct:10,supply:'100M',color:'#f59e0b'},
+];
+const ROADMAP = [
+  {q:'Q1 2025',phase:'Phase 1',color:'#10b981',status:'done',items:['Project concept & whitepaper','Team formation','TON smart contract dev','Telegram Mini App beta']},
+  {q:'Q2 2025',phase:'Phase 2',color:'#10b981',status:'done',items:['FWMC Jetton deployment','NFT collection mint (10K)','Mining system live','Community building']},
+  {q:'Q3 2025',phase:'Phase 3',color:'#7c3aed',status:'cur',items:['NFT Marketplace launch','Full Mini App release','Referral & staking system','CEX listing applications']},
+  {q:'Q4 2025',phase:'Phase 4',color:'#475569',status:'up',items:['DEX on STON.fi & DeDust','CEX Tier 2 listings','Global marketing push','Football club partnerships']},
+  {q:'Q1 2026',phase:'Phase 5',color:'#475569',status:'up',items:['WC 2026 partnership','Fantasy football on-chain','Match prediction platform','Major CEX listings']},
+];
+const WP_CHAPTERS = [
+  {n:'01',t:'Executive Summary',d:'Project overview, mission and vision'},
+  {n:'02',t:'Technology Stack',d:'TON blockchain, Jetton, smart contracts'},
+  {n:'03',t:'NFT Mining System',d:'How NFTs generate FWMC rewards'},
+  {n:'04',t:'Tokenomics',d:'Supply, distribution, vesting schedule'},
+  {n:'05',t:'Governance & DAO',d:'Community voting, treasury management'},
+  {n:'06',t:'Roadmap & Vision',d:'Development milestones and goals'},
+];
+const FAQS = [
+  {q:'What is FWMC Coin?',a:'FWMC is a Jetton token on the TON Blockchain — the native currency of FIFA World Cup Fun. Used for buying NFTs, earning mining rewards, and participating in the ecosystem.'},
+  {q:'How do I earn FWMC?',a:'Buy World Cup NFTs, activate them in the Telegram Mini App mining system, and earn FWMC every hour. Higher rarity NFTs give bigger boosts (up to +50%).'},
+  {q:'What blockchain is FWMC on?',a:'FWMC is built on The Open Network (TON) — ultra-fast transactions, very low fees, and native Telegram integration via the Jetton standard.'},
+  {q:'How do NFTs boost mining?',a:'Each NFT has a mining boost (+1% to +50%). Activate NFTs in the mining system to increase FWMC earnings per hour. Stack multiple NFTs for compounded boosts.'},
+  {q:'Where can I buy FWMC?',a:'Currently earned through mining. After listing, FWMC will be on STON.fi and DeDust DEXs, then centralized exchanges. Join our Telegram for announcements.'},
+  {q:'How do I get started?',a:'1) Open Telegram 2) Join our community 3) Open the Mini App 4) Start mining free 5) Buy NFTs to boost speed. Simple!'},
+];
+const LINKS = {
+  nft_tg:'https://t.me/FifaOGPass',
+  nft_tw:'https://x.com/intent/follow?screen_name=FifaOGPass',
+};
+
+// ─── ADMIN ────────────────────────────────────────────────────────────────────
+const ADMIN_PWD = 'fwmc2025';
+let clickCnt = 0, clickTimer, selColor = 'rgba(239,68,68,.18)', imgDataUrl = null;
+
+document.getElementById('nav-logo').addEventListener('click', () => {
+  clickCnt++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => clickCnt = 0, 3000);
+  if (clickCnt >= 10) { clickCnt = 0; openAdmin(); }
+});
+
+function openAdmin() {
+  document.getElementById('admin-ov').style.display = 'flex';
+  document.getElementById('adm-login').style.display = 'block';
+  document.getElementById('adm-dash').style.display = 'none';
+}
+function closeAdmin() {
+  document.getElementById('admin-ov').style.display = 'none';
+  document.getElementById('adm-pass').value = '';
+}
+function checkPass() {
+  if (document.getElementById('adm-pass').value === ADMIN_PWD) {
+    document.getElementById('adm-login').style.display = 'none';
+    document.getElementById('adm-dash').style.display = 'block';
+    renderAdminList();
+  } else showToast('⚠️ Wrong password!');
+}
+
+function previewImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    imgDataUrl = e.target.result;
+    const prev = document.getElementById('img-preview');
+    prev.innerHTML = `<img src="${imgDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:10px"/>`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectColor(el) {
+  document.querySelectorAll('.adm-color-dot').forEach(d => d.classList.remove('sel'));
+  el.classList.add('sel');
+  selColor = el.dataset.color;
+}
+
+// ─── NFT STORAGE ──────────────────────────────────────────────────────────────
+function loadNFTs() {
+  try { return JSON.parse(localStorage.getItem('fwmc_nfts') || '[]'); } catch { return []; }
+}
+function saveNFTs(arr) { localStorage.setItem('fwmc_nfts', JSON.stringify(arr)); }
+
+function postNFT() {
+  const name  = document.getElementById('anft-name').value.trim();
+  const price = document.getElementById('anft-price').value.trim();
+  const rarity= document.getElementById('anft-rarity').value;
+  const boost = document.getElementById('anft-boost').value.trim();
+  const desc  = document.getElementById('anft-desc').value.trim();
+  if (!name || !price) { showToast('⚠️ Name and Price required!'); return; }
+
+  const sections = [];
+  if (document.getElementById('sec-collection').checked) sections.push('collection');
+  if (document.getElementById('sec-auction').checked)    sections.push('auction');
+  if (document.getElementById('sec-picks').checked)      sections.push('picks');
+  if (!sections.length) { showToast('⚠️ Select at least one section!'); return; }
+
+  const nfts = loadNFTs();
+  nfts.unshift({ id:Date.now(), name, price, rarity, boost, desc, color:selColor, img:imgDataUrl, sections, date:new Date().toLocaleDateString('en-GB'), likes:0 });
+  saveNFTs(nfts);
+
+  // Reset form
+  ['anft-name','anft-price','anft-boost','anft-desc'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('img-file').value='';
+  document.getElementById('img-preview').innerHTML=`<div class="adm-img-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Tap to upload image</span></div>`;
+  imgDataUrl = null;
+
+  renderAdminList();
+  renderPublicNFTs();
+  const secLabels = {collection:'NFT Collection',auction:'Live Auctions',picks:"Today's Picks"};
+  showToast(`✅ Posted to: ${sections.map(s=>secLabels[s]).join(', ')}!`);
+}
+
+function deleteNFT(id) {
+  if (!confirm('Delete this NFT from all sections?')) return;
+  saveNFTs(loadNFTs().filter(n => n.id !== id));
+  renderAdminList();
+  renderPublicNFTs();
+  showToast('🗑️ NFT deleted from all sections');
+}
+
+function renderAdminList() {
+  const nfts = loadNFTs();
+  const el = document.getElementById('adm-nft-list');
+  document.getElementById('nft-count').textContent = `(${nfts.length} posted)`;
+  if (!nfts.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:16px">No NFTs posted yet.</p>'; return; }
+  const secLabels = {collection:'🎴',auction:'🔨',picks:'✨'};
+  el.innerHTML = nfts.map(n => `
+    <div class="adm-nft-row">
+      <div class="adm-nft-thumb">${n.img?`<img src="${n.img}"/>`:`<span style="font-size:22px">🎴</span>`}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.name}</div>
+        <div style="font-size:10px;color:var(--muted)">${n.rarity} • ◈${n.price} TON${n.boost?` • +${n.boost}%`:''}</div>
+        <div style="font-size:10px;color:var(--purple);margin-top:2px">${(n.sections||['collection']).map(s=>secLabels[s]||s).join(' ')}</div>
+      </div>
+      <button class="adm-btn-del" onclick="deleteNFT(${n.id})">🗑</button>
+    </div>`).join('');
+}
+
+let picksAll = [];
+
+function renderPublicNFTs() {
+  const nfts = loadNFTs();
+  const rColors = {Mythic:'#f87171',Legendary:'#fbbf24',Epic:'#c084fc',Rare:'#60a5fa',Common:'#94a3b8'};
+
+  function card(n, badge, showTimer) {
+    return `<div class="nft-card-item" data-rarity="${n.rarity}">
+      <div class="nft-card-img-wrap" style="background:linear-gradient(145deg,${n.color},var(--card))">
+        ${n.img?`<img src="${n.img}" alt="${n.name}"/>`:`<div class="nft-em">🎴</div>`}
+        <div class="nft-new-badge">${badge}</div>
+        <div class="nft-like-badge" onclick="this.textContent='♥ 1'">♡ 0</div>
+        ${showTimer?`<div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(13,13,26,.85);border:1px solid var(--border);border-radius:100px;padding:4px 13px;font-family:'Space Mono',monospace;font-size:11px;color:var(--text);z-index:2;white-space:nowrap">⏱ 12:00:00</div>`:''}
+      </div>
+      <div class="nft-card-body">
+        <div class="nft-card-top"><div class="nft-card-name">${n.name}</div><span class="rarity-badge r-${n.rarity.toLowerCase()}">${n.rarity}</span></div>
+        ${n.boost?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">⚡ +${n.boost}% Mining Boost</div>`:''}
+        ${n.desc?`<div class="nft-desc-text">${n.desc}</div>`:''}
+        <div class="nft-card-meta"><div><div class="nft-creator-lbl">Posted ${n.date}</div></div><div class="nft-price-val">◈ ${n.price} TON</div></div>
+        <div class="nft-card-btns">
+          <button class="btn-bid" onclick="window.open('${LINKS.nft_tg}','_blank')">${showTimer?'Place Bid':'Buy Now'}</button>
+          <button class="btn-info" onclick="window.open('${LINKS.nft_tw}','_blank')">Info</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function setGrid(id, arr, badge, timer, emIcon, emTitle, emDesc) {
+    const g = document.getElementById(id); if(!g) return;
+    if (!arr.length) { g.innerHTML=`<div class="empty-nft-state"><div class="empty-icon">${emIcon}</div><div class="empty-title">${emTitle}</div><div class="empty-desc">${emDesc}</div></div>`; return; }
+    g.innerHTML = arr.map(n => card(n, badge, timer)).join('');
+  }
+
+  setGrid('nft-grid',     nfts.filter(n=>(n.sections||['collection']).includes('collection')), '🆕 NEW',     false, '🎴','No NFTs Listed Yet','Admin will post World Cup NFTs here soon.');
+  setGrid('auction-grid', nfts.filter(n=>(n.sections||[]).includes('auction')),                '🔨 AUCTION', true,  '🔨','No Active Auctions','Live auction NFTs will appear here.');
+  picksAll = nfts.filter(n=>(n.sections||[]).includes('picks'));
+  setGrid('picks-grid',   picksAll,                                                             '✨ PICK',    false, '✨','No Picks Yet','Today\'s featured picks will appear here.');
+}
+
+function filterPicks(rarity, el) {
+  document.querySelectorAll('#picks-filters .fpill').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const filtered = rarity==='All' ? picksAll : picksAll.filter(n=>n.rarity===rarity);
+  const g = document.getElementById('picks-grid');
+  if (!filtered.length) { g.innerHTML=`<div class="empty-nft-state"><div class="empty-icon">✨</div><div class="empty-title">No ${rarity} Picks</div><div class="empty-desc">No ${rarity} NFT picks posted yet.</div></div>`; return; }
+  g.innerHTML = filtered.map(n=>`
+    <div class="nft-card-item">
+      <div class="nft-card-img-wrap" style="background:linear-gradient(145deg,${n.color},var(--card))">
+        ${n.img?`<img src="${n.img}" alt="${n.name}"/>`:`<div class="nft-em">🎴</div>`}
+        <div class="nft-new-badge">✨ PICK</div>
+        <div class="nft-like-badge" onclick="this.textContent='♥ 1'">♡ 0</div>
+      </div>
+      <div class="nft-card-body">
+        <div class="nft-card-top"><div class="nft-card-name">${n.name}</div><span class="rarity-badge r-${n.rarity.toLowerCase()}">${n.rarity}</span></div>
+        ${n.boost?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">⚡ +${n.boost}%</div>`:''}
+        ${n.desc?`<div class="nft-desc-text">${n.desc}</div>`:''}
+        <div class="nft-card-meta"><div><div class="nft-creator-lbl">Posted ${n.date}</div></div><div class="nft-price-val">◈${n.price} TON</div></div>
+        <div class="nft-card-btns"><button class="btn-bid" onclick="window.open('${LINKS.nft_tg}','_blank')">Buy Now</button><button class="btn-info" onclick="window.open('${LINKS.nft_tw}','_blank')">Info</button></div>
+      </div>
+    </div>`).join('');
+}
+
+// ─── RENDER STATIC ────────────────────────────────────────────────────────────
+function renderAll() {
+  // Tokenomics
+  document.getElementById('tcard-grid').innerHTML = TOKEN_DIST.map(t => `
+    <div class="tcard"><div class="tcard-pct" style="color:${t.color}">${t.pct}%</div><div class="tcard-name">${t.name}</div><div class="tcard-supply">${t.supply} FWMC</div></div>`).join('');
+  document.getElementById('tbar').innerHTML = TOKEN_DIST.map(t => `
+    <div class="tbar-seg" style="width:${t.pct}%;background:${t.color}" title="${t.name}: ${t.pct}%"></div>`).join('');
+  document.getElementById('tinfo-grid').innerHTML = [
+    ['Token Name','FWMC','var(--purple)'],['Network','TON','var(--cyan)'],['Standard','Jetton','var(--text)'],['Decimals','9','var(--text)']
+  ].map(([l,v,c]) => `<div class="tinfo-item"><div class="tinfo-lbl">${l}</div><div class="tinfo-val" style="color:${c}">${v}</div></div>`).join('');
+
+  // Roadmap
+  document.getElementById('rm-grid').innerHTML = ROADMAP.map(r => `
+    <div class="rm-card ${r.status==='cur'?'cur':''}">
+      <div class="rm-phase" style="color:${r.color}">${r.phase}</div>
+      <div class="rm-q">${r.q}</div>
+      <div class="rm-list">${r.items.map(i => `<div class="rm-row rm-${r.status}">${i}</div>`).join('')}</div>
+      <div class="rm-status ${r.status==='done'?'rs-done':r.status==='cur'?'rs-cur':'rs-up'}">
+        ${r.status==='done'?'✓ Done':r.status==='cur'?'⚡ Active':'⏳ Soon'}
+      </div>
+    </div>`).join('');
+
+  // Whitepaper chapters
+  document.getElementById('wp-chapters').innerHTML = WP_CHAPTERS.map(c => `
+    <div class="wp-ch"><div class="wp-num">${c.n}</div><div><div class="wp-ch-title">${c.t}</div><div class="wp-ch-desc">${c.d}</div></div></div>`).join('');
+
+  // FAQ
+  document.getElementById('faq-list').innerHTML = FAQS.map(f => `
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><span class="faq-q-txt">${f.q}</span><span class="faq-ico">+</span></div>
+      <div class="faq-a"><p>${f.a}</p></div>
+    </div>`).join('');
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+  }, {threshold: 0.08});
+  document.querySelectorAll('.rev').forEach(el => obs.observe(el));
+
+  // Load admin NFTs
+  renderPublicNFTs();
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function toggleFAQ(item) {
+  const ans = item.querySelector('.faq-a');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-a').classList.remove('open'); });
+  if (!open) { item.classList.add('open'); ans.classList.add('open'); }
+}
+function toggleMob() {
+  const m = document.getElementById('mob-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.background = window.scrollY > 50 ? 'rgba(13,13,26,.97)' : 'rgba(13,13,26,.85)';
+});
+let tT;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show';
+  clearTimeout(tT); tT = setTimeout(() => t.className = '', 2800);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
